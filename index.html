@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timetable Generator Authentication Page</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <img src="logo2.png" alt="Logo or Header Image">
+    </header>
+    <main>
+        <form action="/api/login/" method="POST" id="loginForm">
+            <h2>Login</h2>
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" placeholder="Enter username">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" placeholder="Enter password">
+            <button type="submit">Login</button>
+        </form>
+    </main>
+    <script src="https://unpkg.com/whatwg-fetch@3.6.2/dist/fetch.umd.js"></script>
+    <script>
+    const form = document.getElementById('loginForm');
+
+    form.addEventListener('submit', (event) => {
+    event.preventDefault(); // prevents default form submission
+
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+
+    // Send POST request with username and password data
+    fetch('http://localhost:3000/api/login/', {
+        method: 'POST',
+        body: JSON.stringify({ username, password }),
+        headers: {
+        'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.message === " Authorized success") {
+        // User is authorized, redirect to desired page
+        window.location.replace('trial2.html')
+        } else {
+        // User is not authorized, show error message
+        alert('Sorry, you are not authorized to edit the Timetable.');
+        }
+    })
+    .catch(error => console.error(error));
+    });
+    </script>
+    </body>
+</html>

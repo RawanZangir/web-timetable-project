@@ -1,0 +1,70 @@
+body {
+    font-family: sans-serif;
+    background-color: #474947ff;
+    color: white;
+}
+
+header {
+    padding: 15px;
+    text-align: center;
+}
+
+header img {
+    max-width: 200px;
+}
+
+main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+}
+
+form {
+    background-color: #02ACF4ff;
+    padding: 20px;
+    border-radius: 5px;
+    width: 500px;
+}
+
+form h2 {
+    margin: 0 0 20px;
+    font-size: 1.5em;
+    color: white;
+}
+
+form label {
+    display: block;
+    margin: 5px 0;
+    font-size: 0.9em;
+    color: white;
+}
+
+form input {
+    display: block;
+    width: 95%;
+    padding: 5px 10px;
+    border: 1px solid #2899CAff;
+    border-radius: 3px;
+    font-size: 0.9em;
+    margin-right: 10px;
+}
+
+button {
+    display: block;
+    margin-top: 20px;
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #F4C515ff;
+    color: black;
+    font-size: 1em;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #2899CAff;
+}
+
+/* Additional styles can be added here to customize the form elements, colors, and overall layout */

@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timetable Generator</title>
+    <style>
+        /* CSS HEX
+        --jonquil: #F4C515ff;
+        --white: #FFFFFFff;
+        --celestial-blue: #2899CAff;
+        --cerulean: #3E778Eff;
+        --outer-space: #474947ff;
+        --picton-blue: #02ACF4ff;
+        --pigment-green: #319B36ff;*/
+
+        p {
+            line-height: 1.5px;
+        }
+
+        table {
+            font-family:Georgia, 'Times New Roman', Times, serif;
+            border-collapse: collapse;
+            width: 100%;
+            table-layout: auto;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 5px;
+            text-align: center;
+            white-space: normal;
+            border-radius: 5px
+        }
+
+        tr:nth-child(even){background-color: #f2f2f2}
+
+        th {
+        background-color: #2899CAff;
+        color: white;
+        font-size: 20px;
+        padding: 5px;
+        border-radius: 5px
+        }
+
+        #time {font-weight: bold;}
+
+        .time-slot {cursor: pointer; border-radius: 5px; padding: 5px; font-size: 12px;}
+        .time-slot:hover{background-color: #02ACF4ff;}
+        .slot { background-color: #319B36ff; color: white; }
+
+        .pop-up {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(255, 255, 255, 1);
+            padding: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.4);
+            display: none;
+        }
+
+        input[type=text], select {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            background-color: #3E778Eff;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {background-color: #319B36ff;}
+
+        header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 20px;
+        background-color: white;
+        color: #3E778Eff;
+        }
+
+        .logo {
+        flex-basis: 50px;
+        text-align: center;}
+
+        .university-name {
+        flex: 1;}
+
+        h1 {
+        font-size: 2em;
+        margin: 0;}
+
+        h2 {
+        font-size: 1em;
+        margin: 0;}
+
+        nav {
+        flex-basis: 50%;
+        display: flex;
+        justify-content: space-between;
+        list-style: none;
+        padding: 10px;
+        margin: 10px;
+        }
+
+        nav li {
+        background-color: #3E778Eff;
+        display: inline-block;
+        margin: 20px;
+        }
+
+        .nav-separator {
+        width: 1px;
+        height: 100%;
+        background-color: #444;
+        display: inline-block;
+        margin: 0 10px;
+        }
+
+        nav li a {
+        color: #fff;
+        text-decoration: none;
+        padding: 10px;
+        border-radius: 4px;
+        }
+
+        nav li a:hover {
+        background-color: #2899CAff;
+        cursor: pointer;
+        }
+
+        .dropdown-menu {
+        display: none;
+        position: absolute;
+        background-color: #3E778Eff;
+        color: #fff;
+        padding: 10px;
+        margin: 10px;
+        list-style: none;
+        border-radius: 4px;
+        width: 150px;
+        }
+
+        .dropdown-menu-vertical {
+        display: none;
+        }
+
+        .dropdown-menu li {
+        padding: 5px 10px;
+        border-radius: 4px;
+        }
+
+        .dropdown-menu li a {
+        display: block;
+        text-decoration: none;
+        color: #fff;
+        border-radius: 4px;
+        }
+
+        .dropdown-menu li a:hover {
+        background-color: #2899CAff;
+        cursor: pointer;
+        }
+
+        nav li:hover .dropdown-menu {
+        display: block;
+        cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+          <img src="logo.jpg" alt="University Logo">
+        </div>
+        <div class="university-name">
+          <h1>Port Said University</h1>
+          <h2>Faculty of Engineering</h2>
+        </div>
+        <nav>
+        </nav>
+     </header>
+     <nav>
+    </nav>
+    <form id="selectionForm">
+      <label for="department">Department:</label>
+      <select id="department">
+        <option value="">Select Department</option>
+        <option value="Electrical Engineering">Electrical Engineering Department</option>
+      </select>
+      <label for="year">Year:</label>
+      <select id="year">
+        <option value="">Select Year</option>
+        <option value="First">First</option>
+        <option value="Second">Second</option>
+        <option value="Third">Third</option>
+        <option value="Fourth">Fourth</option>
+      </select>
+      <label for="semester">Semester:</label>
+      <select id="semester">
+        <option value="">Select Semester</option>
+        <option value="First Semester">First</option>
+        <option value="Second Semester">Second</option>
+      </select>
+      <br>
+      <button type="submit">Submit</button>
+    </form>
+    <h2 id="userSelectionHeader">Please select options from the form.</h2>
+    <button id="clearButton">Clear Selection</button>
+       <table>
+        <tr>
+            <th>Time/Day</th>
+            <th>Saturday</th>
+            <th>Sunday</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+        </tr>
+        <tr>
+            <td id="time">8:30 AM - 10:00 AM</td>
+            <td class="time-slot" id="saturday-8-10"></td>
+            <td class="time-slot" id="sunday-8-10"></td>
+            <td class="time-slot" id="monday-8-10"></td>
+            <td class="time-slot" id="tuesday-8-10"></td>
+            <td class="time-slot" id="wednesday-8-10"></td>
+            <td class="time-slot" id="thursday-8-10"></td>
+        </tr>
+        <tr>
+            <td id="time">10:15 AM - 11:45 AM</td>
+            <td class="time-slot" id="saturday-10-12"></td>
+            <td class="time-slot" id="sunday-10-12"></td>
+            <td class="time-slot" id="monday-10-12"></td>
+            <td class="time-slot" id="tuesday-10-12"></td>
+            <td class="time-slot" id="wednesday-10-12"></td>
+            <td class="time-slot" id="thursday-10-12"></td>
+        </tr>
+        <tr>
+            <td id="time">12:15 PM - 1:45 PM</td>
+            <td class="time-slot" id="saturday-12-2"></td>
+            <td class="time-slot" id="sunday-12-2"></td>
+            <td class="time-slot" id="monday-12-2"></td>
+            <td class="slot" id="tuesday-12-2">Student Activity</td>
+            <td class="time-slot" id="wednesday-12-2"></td>
+            <td class="time-slot" id="thursday-12-2"></td>
+        </tr>
+        <tr>
+            <td id="time">02:00 PM - 3:30 PM</td>
+            <td class="time-slot" id="saturday-2-4"></td>
+            <td class="time-slot" id="sunday-2-4"></td>
+            <td class="time-slot" id="monday-2-4"></td>
+            <td class="time-slot" id="tuesday-2-4"></td>
+            <td class="time-slot" id="wednesday-2-4"></td>
+            <td class="time-slot" id="thursday-2-4"></td>
+        </tr>
+        <tr>
+            <td id="time">03:30 PM - 5:00 PM</td>
+            <td class="time-slot" id="saturday-3-5"></td>
+            <td class="time-slot" id="sunday-3-5"></td>
+            <td class="time-slot" id="monday-3-5"></td>
+            <td class="time-slot" id="tuesday-3-5"></td>
+            <td class="time-slot" id="wednesday-3-5"></td>
+            <td class="time-slot" id="thursday-3-5"></td>
+        </tr>
+    </table>
+    <div id="pop-up" class="pop-up"></div>
+    <button type="button" id="myButton">Generate Time Table</button>
+    <button type="button" id="printButton">Print Timetable</button>
+
+    <script>
+const selectionForm = document.getElementById('selectionForm');
+const userSelectionHeader = document.getElementById('userSelectionHeader');
+
+selectionForm.addEventListener('submit', (event) => {
+  event.preventDefault();
+
+  const department = document.getElementById('department').value;
+  const year = document.getElementById('year').value;
+  const semester = document.getElementById('semester').value;
+
+  if (!department || !year || !semester) {
+    userSelectionHeader.textContent = 'Please select options from all fields.';
+  } else {
+    userSelectionHeader.textContent = `Department - ${department}, Year - ${year}, Semester - ${semester}`;
+  }
+});
+const popUpElement = document.getElementById('pop-up');
+const timeSlots = document.querySelectorAll('.time-slot');
+
+timeSlots.forEach((slot) => {
+  slot.addEventListener('click', (event) => {
+    popUpElement.style.display = 'block';
+    popUpElement.innerHTML = ''; // Clear existing child elements
+
+    const classNameInput = document.createElement('input');
+    classNameInput.type = 'text';
+    classNameInput.placeholder = 'Class Name';
+
+    const instructorInput = document.createElement('input');
+    instructorInput.type = 'text';
+    instructorInput.placeholder = 'Instructor Name';
+
+    const engInput = document.createElement('input');
+    engInput.type = 'text';
+    engInput.placeholder = 'Engineer Name';
+
+    const classTypeSelect = document.createElement('select');
+    classTypeSelect.id = 'classType';
+
+    const lectureOption = document.createElement('option');
+    lectureOption.value = 'Lecture';
+    lectureOption.textContent = 'Lecture';
+    classTypeSelect.appendChild(lectureOption);
+
+    const labOption = document.createElement('option');
+    labOption.value = 'Practical Lab';
+    labOption.textContent = 'Practical Lab';
+    classTypeSelect.appendChild(labOption);
+
+  const roomNumberSelect = document.createElement('select');
+  roomNumberSelect.id = 'roomNumber';
+  for (let i = 501; i <= 518; i++) {
+    const option = document.createElement('option');
+    option.value = i;
+    option.textContent = `Room ${i}`;
+    roomNumberSelect.appendChild(option);
+  }
+  // Add options for labs
+  for (let i = 1; i <= 6; i++) {
+    const option = document.createElement('option');
+    option.value = `lab-${i}`;
+    option.textContent = `Lab ${i}`;
+    roomNumberSelect.appendChild(option);
+  }
+    const saveButton = document.createElement('button');
+    saveButton.textContent = 'Save';
+
+    const originalColor = slot.style.backgroundColor;
+
+    saveButton.addEventListener('click', () => {
+    const className = classNameInput.value;
+    const instructorName = "Dr." + " " + instructorInput.value;
+    const engName = "Eng." + " " + engInput.value;
+    const classType = classTypeSelect.options[classTypeSelect.selectedIndex].value;
+    const roomNumber = "Room" + "" + roomNumberSelect.value;
+
+    if (!className || !instructorName || !engName || !classType || !roomNumber) {
+    alert('Please fill out all fields');
+    return;
+    }
+
+    const tooltipContent = `
+        <p>Day: ${event.target.id.split('-')[0]}</p>
+        <p>Time: ${event.target.id.split('-')[1]} AM - ${parseInt(event.target.id.split('-')[1].split(':')[0]) + 1} PM</p>
+        <p>Class Name: ${className}</p>
+        <p>Instructor: ${instructorName}</p>
+        <p>Engineer: ${engName}</p>
+        <p>Class Type: ${classType}</p>
+        <p>Room: ${roomNumber}</p>`;
+
+    const cellContent = `
+        <p>${className}</p>
+        <p>${instructorName}</p>
+        <p>${engName}</p>
+        <p>${classType}</p>
+        <p>${roomNumber}</p>`;
+
+    if (classType === 'Lecture') {
+        event.target.style.backgroundColor = '#2899CAff';
+        } else if (classType === 'Practical Lab') {
+        event.target.style.backgroundColor = '#F4C515ff';
+        } else {
+        event.target.style.backgroundColor = 'white'; // Default color for other class types
+        }
+
+    event.target.innerHTML = cellContent;
+    event.target.title = tooltipContent;
+    popUpElement.style.display = 'none';
+
+});
+
+    // Add buttons for edit and delete
+    const editButton = document.createElement('button');
+    editButton.textContent = 'Edit';
+    editButton.addEventListener('click', () => {
+      // Fill input fields with existing data
+      classNameInput.value = slot.children[0].textContent;
+      instructorInput.value = slot.children[1].textContent.split(' ')[1];
+      engInput.value = slot.children[2].textContent.split(' ')[1];
+      classTypeSelect.value = slot.children[3].textContent;
+      roomNumberSelect.value = slot.children[4].textContent;
+      saveButton.textContent = 'Save Changes';
+    });
+
+    const deleteButton = document.createElement('button');
+    deleteButton.textContent = 'Delete';
+    deleteButton.addEventListener('click', () => {
+      // Remove data from slot
+      slot.innerHTML = '';
+      slot.style.backgroundColor = originalColor;
+      slot.removeAttribute('title');
+      popUpElement.style.display = 'none';
+    });
+
+if (saveButton.textContent === 'Save Changes') {
+  const className = classNameInput.value;
+  const instructorName = "Dr." + " " + instructorInput.value;
+  const engName = "Eng." + " " + engInput.value;
+  const classType = classTypeSelect.options[classTypeSelect.selectedIndex].value;
+  const roomNumber = roomNumberSelect.options[roomNumberSelect.selectedIndex].value;
+
+  const cellContent = `
+    <p>${className}</p>
+    <p>${instructorName}</p>
+    <p>${engName}</p>
+    <p>${classType}</p>
+    <p>${roomNumber}</p>`;
+
+  // Update slot content with edited information
+  slot.innerHTML = cellContent;
+  slot.style.backgroundColor = classType === 'Lecture' ? '#2899CAff' : '#F4C515ff';
+  slot.title = tooltipContent;
+
+  saveButton.textContent = 'Save';
+}
+    popUpElement.appendChild(classNameInput);
+    popUpElement.appendChild(instructorInput);
+    popUpElement.appendChild(engInput);
+    popUpElement.appendChild(classTypeSelect);
+    popUpElement.appendChild(roomNumberSelect);
+    popUpElement.appendChild(saveButton);
+    popUpElement.appendChild(editButton);
+    popUpElement.appendChild(deleteButton);
+
+    const buttonElement = document.getElementById('myButton');
+    buttonElement.addEventListener('click', () => {
+    window.open('https://www.example.com', '_blank'); })
+
+    const printButton = document.getElementById('printButton');
+    printButton.addEventListener('click', printTable);
+    function printTable() {
+        window.print(); }
+});
+  });
+    </script>
